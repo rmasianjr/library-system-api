@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
+const catchErrors = require('../middleware/catchErrors');
+
 const {
   getCategories,
   getSingleCategory,
@@ -9,10 +11,10 @@ const {
   deleteCategory
 } = require('../controllers/categoryController');
 
-router.get('/', getCategories);
-router.get('/:id', getSingleCategory);
-router.post('/', createCategory);
-router.put('/:id', updateCategory);
-router.delete('/:id', deleteCategory);
+router.get('/', catchErrors(getCategories));
+router.get('/:id', catchErrors(getSingleCategory));
+router.post('/', catchErrors(createCategory));
+router.put('/:id', catchErrors(updateCategory));
+router.delete('/:id', catchErrors(deleteCategory));
 
 module.exports = router;
