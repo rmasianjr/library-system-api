@@ -8,13 +8,13 @@ const categorySchema = new Schema({
     required: true,
     trim: true,
     minlength: 5,
-    maxlength: 100
+    maxlength: 50
   }
 });
 
 function validateCategory(category) {
   const schema = {
-    name: Joi.string().trim().min(5).max(100).required()
+    name: Joi.string().trim().min(5).max(50).required()
   };
 
   return Joi.validate(category, schema);

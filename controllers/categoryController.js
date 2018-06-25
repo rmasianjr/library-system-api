@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 const { Category, validateCategory } = require('../models/Category');
 
 exports.getCategories = async (req, res) => {
@@ -6,6 +8,9 @@ exports.getCategories = async (req, res) => {
 };
 
 exports.getSingleCategory = async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id))
+    return res.status(404).send({ error: 'Invalid id' });
+
   const category = await Category.findById(req.params.id);
 
   if (!category)
@@ -27,6 +32,9 @@ exports.createCategory = async (req, res) => {
 };
 
 exports.updateCategory = async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id))
+    return res.status(404).send({ error: 'Invalid id' });
+
   const { error } = validateCategory(req.body);
   if (error) return res.status(400).send({ error: error.details[0].message });
 
@@ -44,6 +52,9 @@ exports.updateCategory = async (req, res) => {
 };
 
 exports.deleteCategory = async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id))
+    return res.status(404).send({ error: 'Invalid id' });
+
   const category = await Category.findByIdAndRemove(req.params.id);
 
   if (!category)
