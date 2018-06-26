@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
+const validateObjectId = require('../middleware/validateObjectId');
 const catchErrors = require('../middleware/catchErrors');
 
 const {
@@ -12,9 +13,9 @@ const {
 } = require('../controllers/bookController');
 
 router.get('/', catchErrors(getBooks));
-router.get('/:id', catchErrors(getSingleBook));
+router.get('/:id', validateObjectId, catchErrors(getSingleBook));
 router.post('/', catchErrors(createBook));
-router.put('/:id', catchErrors(updateBook));
-router.delete('/:id', catchErrors(deleteBook));
+router.put('/:id', validateObjectId, catchErrors(updateBook));
+router.delete('/:id', validateObjectId, catchErrors(deleteBook));
 
 module.exports = router;

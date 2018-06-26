@@ -1,5 +1,3 @@
-const mongoose = require('mongoose');
-
 const { Book, validateBook } = require('../models/Book');
 const { Category } = require('../models/Category');
 
@@ -9,9 +7,6 @@ exports.getBooks = async (req, res) => {
 };
 
 exports.getSingleBook = async (req, res) => {
-  if (!mongoose.Types.ObjectId.isValid(req.params.id))
-    return res.status(404).send({ error: 'Invalid id' });
-
   const book = await Book.findById(req.params.id);
 
   if (!book)
@@ -47,9 +42,6 @@ exports.createBook = async (req, res) => {
 };
 
 exports.updateBook = async (req, res) => {
-  if (!mongoose.Types.ObjectId.isValid(req.params.id))
-    return res.status(404).send({ error: 'Invalid id' });
-
   const { error } = validateBook(req.body);
   if (error) return res.status(400).send({ error: error.details[0].message });
 
@@ -78,9 +70,6 @@ exports.updateBook = async (req, res) => {
 };
 
 exports.deleteBook = async (req, res) => {
-  if (!mongoose.Types.ObjectId.isValid(req.params.id))
-    return res.status(404).send({ error: 'Invalid id' });
-
   const book = await Book.findByIdAndRemove(req.params.id);
 
   if (!book)
