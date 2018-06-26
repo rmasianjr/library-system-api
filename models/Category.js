@@ -22,3 +22,4 @@ function validateCategory(category) {
 
 exports.Category = mongoose.model('Category', categorySchema);
 exports.validateCategory = validateCategory;
+exports.categorySchema = categorySchema;
