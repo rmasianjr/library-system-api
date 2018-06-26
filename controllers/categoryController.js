@@ -1,4 +1,4 @@
-const { Category, validateCategory } = require('../models/Category');
+const { Category } = require('../models/Category');
 
 exports.getCategories = async (req, res) => {
   const categoryList = await Category.find().sort('name');
@@ -17,9 +17,6 @@ exports.getSingleCategory = async (req, res) => {
 };
 
 exports.createCategory = async (req, res) => {
-  const { error } = validateCategory(req.body);
-  if (error) return res.status(400).send({ error: error.details[0].message });
-
   const category = new Category(req.body);
   await category.save();
 
@@ -27,9 +24,6 @@ exports.createCategory = async (req, res) => {
 };
 
 exports.updateCategory = async (req, res) => {
-  const { error } = validateCategory(req.body);
-  if (error) return res.status(400).send({ error: error.details[0].message });
-
   const category = await Category.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true

@@ -1,4 +1,4 @@
-const { Book, validateBook } = require('../models/Book');
+const { Book } = require('../models/Book');
 const { Category } = require('../models/Category');
 
 exports.getBooks = async (req, res) => {
@@ -18,9 +18,6 @@ exports.getSingleBook = async (req, res) => {
 };
 
 exports.createBook = async (req, res) => {
-  const { error } = validateBook(req.body);
-  if (error) return res.status(400).send({ error: error.details[0].message });
-
   const { title, categoryId, stock, failedReturnFee } = req.body;
 
   const category = await Category.findById(categoryId);
@@ -35,16 +32,12 @@ exports.createBook = async (req, res) => {
     stock,
     failedReturnFee
   });
-
   await book.save();
 
   res.send(book);
 };
 
 exports.updateBook = async (req, res) => {
-  const { error } = validateBook(req.body);
-  if (error) return res.status(400).send({ error: error.details[0].message });
-
   const { title, categoryId, stock, failedReturnFee } = req.body;
 
   const category = await Category.findById(categoryId);
