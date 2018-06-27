@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const Joi = require('joi');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
@@ -22,6 +23,14 @@ const userSchema = new Schema({
     minlength: 6,
     maxlength: 1024
   }
+});
+
+userSchema.pre('save', async function(next) {
+  if (!this.isModified('password')) return next();
+
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
 });
 
 function validateUser(user) {
