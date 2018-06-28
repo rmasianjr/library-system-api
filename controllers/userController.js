@@ -9,5 +9,6 @@ exports.registerUser = async (req, res) => {
   user = new User(req.body);
   await user.save();
 
-  res.send(_.pick(user, ['_id', 'username', 'email']));
+  const token = user.generateAuthToken();
+  res.header('x-auth', token).send(_.pick(user, ['_id', 'username', 'email']));
 };

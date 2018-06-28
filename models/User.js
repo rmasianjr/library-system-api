@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const Joi = require('joi');
 const mongoose = require('mongoose');
@@ -32,6 +33,11 @@ userSchema.pre('save', async function(next) {
   this.password = await bcrypt.hash(this.password, salt);
   next();
 });
+
+userSchema.methods.generateAuthToken = function() {
+  const token = jwt.sign({ _id: this._id }, '123', { expiresIn: 60 * 60 });
+  return token;
+};
 
 function validateUser(user) {
   const schema = {
