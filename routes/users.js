@@ -3,11 +3,13 @@ const router = express.Router();
 
 const { validateUser } = require('../models/User');
 
+const authenticate = require('../middleware/authenticate');
 const validateRequest = require('../middleware/validateRequest');
-const catchErrros = require('../middleware/catchErrors');
+const catchErrors = require('../middleware/catchErrors');
 
-const { registerUser } = require('../controllers/userController');
+const { registerUser, getCurrentUser } = require('../controllers/userController');
 
-router.post('/', validateRequest(validateUser), catchErrros(registerUser));
+router.post('/', validateRequest(validateUser), catchErrors(registerUser));
+router.get('/me', authenticate, catchErrors(getCurrentUser));
 
 module.exports = router;
