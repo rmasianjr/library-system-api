@@ -5,7 +5,7 @@ const port = process.env.PORT || '3000';
 
 mongoose.Promise = global.Promise;
 mongoose
-  .connect('mongodb://localhost/library_db')
+  .connect(process.env.DATABASE)
   .catch(err => console.log(`Error: ${err.message}`));
 
 app.listen(port, () => {

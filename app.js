@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
 
+require('dotenv').config();
+
 const auth = require('./routes/auth');
 const books = require('./routes/books');
 const categories = require('./routes/categories');

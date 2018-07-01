@@ -1,21 +1,19 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
 
-mongoose.Promise = global.Promise;
-
+const { connectTestDB, startConnection, closeConnection } = require('./helper/test_helper');
 const { User } = require('../models/User');
-const app = require('../app');
 
 let server;
 
 describe('/api/users', () => {
   beforeAll(() => {
-    mongoose.connect('mongodb://localhost/library_db_test');
-    server = app.listen(3001);
+    connectTestDB();
+    server = startConnection();
   });
 
   afterAll(async () => {
-    await Promise.all([mongoose.connection.close(), server.close()]);
+    await closeConnection(server);
   });
 
   afterEach(async () => {
@@ -145,8 +143,7 @@ describe('/api/users', () => {
 
     it('should return 400 if token is already expired', async () => {
       const tokenHead = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9';
-      const tokenPayload =
-        'eyJfaWQiOiI1YjMzNmJjNTBmYmI2NDBiYmNlZTI0ODIiLCJpYXQiOjE1MzA0MDk5NDMsImV4cCI6MTUzMDQwOTk0NH0';
+      const tokenPayload = 'eyJfaWQiOiI1YjMzNmJjNTBmYmI2NDBiYmNlZTI0ODIiLCJpYXQiOjE1MzA0MDk5NDMsImV4cCI6MTUzMDQwOTk0NH0';
       const tokenSign = '4UZ-zjtkpet1GbHDtCDPaUnRK0Vg8cx96RvmcQczcjc';
       const expiredToken = `${tokenHead}.${tokenPayload}.${tokenSign}`;
 

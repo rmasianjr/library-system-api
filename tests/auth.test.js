@@ -1,10 +1,8 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
 
-mongoose.Promise = global.Promise;
-
+const { connectTestDB, startConnection, closeConnection } = require('./helper/test_helper');
 const { User } = require('../models/User');
-const app = require('../app');
 
 let server;
 
@@ -20,8 +18,8 @@ describe('POST /api/auth', () => {
   };
 
   beforeAll(async () => {
-    mongoose.connect('mongodb://localhost/library_db_test');
-    server = app.listen(3001);
+    connectTestDB();
+    server = startConnection();
 
     registeredUser = new User({
       username: 'exist user',
@@ -33,7 +31,7 @@ describe('POST /api/auth', () => {
 
   afterAll(async () => {
     await User.remove({});
-    await Promise.all([mongoose.connection.close(), server.close()]);
+    await closeConnection(server);
   });
 
   beforeEach(() => {

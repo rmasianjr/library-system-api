@@ -1,21 +1,19 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
 
-mongoose.Promise = global.Promise;
-
+const { connectTestDB, startConnection, closeConnection } = require('./helper/test_helper');
 const { Category } = require('../models/Category');
-const app = require('../app');
 
 let server;
 
 describe('/api/categories', () => {
   beforeAll(() => {
-    mongoose.connect('mongodb://localhost/library_db_test');
-    server = app.listen(3001);
+    connectTestDB();
+    server = startConnection();
   });
 
   afterAll(async () => {
-    await Promise.all([mongoose.connection.close(), server.close()]);
+    await closeConnection(server);
   });
 
   afterEach(async () => {
