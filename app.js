@@ -9,6 +9,7 @@ const auth = require('./routes/auth');
 const books = require('./routes/books');
 const categories = require('./routes/categories');
 const users = require('./routes/users');
+const borrowers = require('./routes/borrowers');
 const error = require('./middleware/error');
 
 const app = express();
@@ -20,6 +21,7 @@ app.use('/api/auth', auth);
 app.use('/api/categories', categories);
 app.use('/api/books', books);
 app.use('/api/users', users);
+app.use('/api/borrowers', borrowers);
 app.use(error);
 
 module.exports = app;
