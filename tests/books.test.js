@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const { connectTestDB, startConnection, closeConnection } = require('./helper/test_helper');
 const { Book } = require('../models/Book');
 const { Category } = require('../models/Category');
+const { User } = require('../models/User');
 
 let server;
 
@@ -103,10 +104,12 @@ describe('/api/books', () => {
     let stock;
     let failedReturnFee;
     let category;
+    let token;
 
     const run = () => {
       return request(server)
         .post('/api/books')
+        .set('x-auth', token)
         .send({ title, categoryId, stock, failedReturnFee });
     };
 
@@ -124,6 +127,7 @@ describe('/api/books', () => {
       categoryId = category._id;
       stock = 10;
       failedReturnFee = 50;
+      token = new User().generateAuthToken();
     });
 
     it('should save the book if it is valid', async () => {
@@ -141,6 +145,14 @@ describe('/api/books', () => {
       expect(res.body).toHaveProperty('category._id', categoryId.toHexString());
       expect(res.body).toHaveProperty('stock', stock);
       expect(res.body).toHaveProperty('failedReturnFee', failedReturnFee);
+    });
+
+    it('should return 401 if the user is not logged in', async () => {
+      token = '';
+
+      const res = await run();
+
+      expect(res.status).toBe(401);
     });
 
     it('should return 400 if title is invalid', async () => {
@@ -184,10 +196,12 @@ describe('/api/books', () => {
     let newfailedReturnFee;
     let book;
     let categoryInDB;
+    let token;
 
     const run = () => {
       return request(server)
         .put(`/api/books/${id}`)
+        .set('x-auth', token)
         .send({
           title: newTitle,
           categoryId: newCategoryId,
@@ -219,6 +233,7 @@ describe('/api/books', () => {
       newCategoryId = categoryInDB._id;
       newStock = 10;
       newfailedReturnFee = 100;
+      token = new User().generateAuthToken();
     });
 
     it('should update the book if it is valid', async () => {
@@ -240,6 +255,14 @@ describe('/api/books', () => {
       expect(res.body).toHaveProperty('stock', newStock);
       expect(res.body).toHaveProperty('failedReturnFee', newfailedReturnFee);
     });
+
+    it('should return 401 if the user is not logged in', async () => {
+      token = '';
+
+      const res = await run();
+
+      expect(res.status).toBe(401);
+    }); 
 
     it('should return 404 if the given id is invalid', async () => {
       id = 1;
@@ -293,9 +316,12 @@ describe('/api/books', () => {
   describe('DELETE /:id', () => {
     let id;
     let book;
+    let token;
 
     const run = () => {
-      return request(server).delete(`/api/books/${id}`);
+      return request(server)
+        .delete(`/api/books/${id}`)
+        .set('x-auth', token);
     };
 
     beforeEach(async () => {
@@ -308,6 +334,7 @@ describe('/api/books', () => {
       await book.save();
 
       id = book._id;
+      token = new User().generateAuthToken();
     });
 
     it('should delete a book', async () => {
@@ -326,6 +353,14 @@ describe('/api/books', () => {
       expect(res.body).toHaveProperty('category');
       expect(res.body).toHaveProperty('stock', book.stock);
       expect(res.body).toHaveProperty('failedReturnFee', book.failedReturnFee);
+    });
+
+    it('should return 401 if the user is not logged in', async () => {
+      token = '';
+
+      const res = await run();
+
+      expect(res.status).toBe(401);
     });
 
     it('should return 404 if the given id is invalid', async () => {

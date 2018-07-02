@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 
 const { connectTestDB, startConnection, closeConnection } = require('./helper/test_helper');
 const { Category } = require('../models/Category');
+const { User } = require('../models/User');
 
 let server;
 
@@ -77,15 +78,18 @@ describe('/api/categories', () => {
 
   describe('POST /', () => {
     let name;
+    let token;
 
     const run = () => {
       return request(server)
         .post('/api/categories')
+        .set('x-auth', token)
         .send({ name });
     };
 
     beforeEach(() => {
       name = 'category 1';
+      token = new User().generateAuthToken();
     });
 
     it('should save the category if it is valid', async () => {
@@ -101,6 +105,14 @@ describe('/api/categories', () => {
 
       expect(res.body).toHaveProperty('_id');
       expect(res.body).toHaveProperty('name', 'category 1');
+    });
+
+    it('should return 401 if the user is not logged in', async () => {
+      token = '';
+
+      const res = await run();
+
+      expect(res.status).toBe(401);
     });
 
     it('should return 400 if category name is less than 5 characters', async () => {
@@ -124,10 +136,12 @@ describe('/api/categories', () => {
     let id;
     let categoryInDB;
     let newName;
+    let token;
 
     const run = () => {
       return request(server)
         .put(`/api/categories/${id}`)
+        .set('x-auth', token)
         .send({ name: newName });
     };
 
@@ -137,6 +151,7 @@ describe('/api/categories', () => {
 
       id = categoryInDB._id;
       newName = 'updatedName';
+      token = new User().generateAuthToken();
     });
 
     it('should update the category if it is valid', async () => {
@@ -152,6 +167,14 @@ describe('/api/categories', () => {
 
       expect(res.body).toHaveProperty('_id');
       expect(res.body).toHaveProperty('name', newName);
+    });
+
+    it('should return 401 if the user is not logged in', async () => {
+      token = '';
+
+      const res = await run();
+
+      expect(res.status).toBe(401);
     });
 
     it('should return 404 if the given id is invalid', async () => {
@@ -190,9 +213,12 @@ describe('/api/categories', () => {
   describe('DELETE /:id', () => {
     let id;
     let category;
+    let token;
 
     const run = () => {
-      return request(server).delete(`/api/categories/${id}`);
+      return request(server)
+        .delete(`/api/categories/${id}`)
+        .set('x-auth', token);
     };
 
     beforeEach(async () => {
@@ -200,6 +226,7 @@ describe('/api/categories', () => {
       await category.save();
 
       id = category._id;
+      token = new User().generateAuthToken();
     });
 
     it('should delete a category', async () => {
@@ -215,6 +242,14 @@ describe('/api/categories', () => {
 
       expect(res.body).toHaveProperty('_id', category._id.toHexString());
       expect(res.body).toHaveProperty('name', category.name);
+    });
+
+    it('should return 401 if the user is not logged in', async () => {
+      token = '';
+
+      const res = await run();
+
+      expect(res.status).toBe(401);
     });
 
     it('should return 404 if the given id is invalid', async () => {
