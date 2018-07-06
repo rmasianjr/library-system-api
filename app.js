@@ -10,6 +10,7 @@ const books = require('./routes/books');
 const categories = require('./routes/categories');
 const users = require('./routes/users');
 const borrowers = require('./routes/borrowers');
+const borrows = require('./routes/borrows');
 const error = require('./middleware/error');
 
 const app = express();
@@ -22,6 +23,7 @@ app.use('/api/categories', categories);
 app.use('/api/books', books);
 app.use('/api/users', users);
 app.use('/api/borrowers', borrowers);
+app.use('/api/borrows', borrows);
 app.use(error);
 
 module.exports = app;
