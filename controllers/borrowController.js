@@ -40,7 +40,8 @@ exports.createBorrow = async (req, res) => {
     },
     book: {
       _id: book.id,
-      title: book.title
+      title: book.title,
+      failedReturnFee: book.failedReturnFee
     }
   });
 

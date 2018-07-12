@@ -43,6 +43,12 @@ const borrowSchema = new Schema({
         trim: true,
         minlength: 5,
         maxlength: 50
+      },
+      failedReturnFee: {
+        type: Number,
+        required: true,
+        min: 0,
+        max: 500
       }
     }),
     required: true
@@ -70,6 +76,18 @@ borrowSchema.pre('save', function(next) {
     .toDate();
   next();
 });
+
+borrowSchema.methods.setReturn = function() {
+  this.dateReturned = new Date();
+
+  const borrowDays = moment().diff(this.dueDate, 'days');
+
+  if (borrowDays > 0) {
+    this.penaltyFee = borrowDays * this.book.failedReturnFee;
+  } else {
+    this.penaltyFee = 0;
+  }
+};
 
 function validateBorrow(borrow) {
   const schema = {
