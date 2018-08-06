@@ -35,7 +35,8 @@ describe('/api/borrows', () => {
             phone: '123-12-12'
           },
           book: {
-            title: 'title 1'
+            title: 'title 1',
+            failedReturnFee: 50
           }
         },
         {
@@ -46,7 +47,8 @@ describe('/api/borrows', () => {
             phone: '456-56-56'
           },
           book: {
-            title: 'title 2'
+            title: 'title 2',
+            failedReturnFee: 50
           }
         }
       ];
@@ -95,7 +97,8 @@ describe('/api/borrows', () => {
           phone: '123-12-12'
         },
         book: {
-          title: 'title 1'
+          title: 'title 1',
+          failedReturnFee: 50
         }
       });
       await borrow.save();
@@ -121,6 +124,7 @@ describe('/api/borrows', () => {
       expect(res.body).toHaveProperty('_id', id.toHexString());
       expect(res.body).toHaveProperty('borrower.email', borrow.borrower.email);
       expect(res.body).toHaveProperty('book.title', borrow.book.title);
+      expect(res.body).toHaveProperty('book.failedReturnFee', borrow.book.failedReturnFee);
     });
 
     it('should return 401 if the user is not logged in', async () => {
