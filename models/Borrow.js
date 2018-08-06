@@ -70,12 +70,11 @@ const borrowSchema = new Schema({
   }
 });
 
-borrowSchema.pre('save', function(next) {
+borrowSchema.methods.setDueDate = function() {
   this.dueDate = moment(this.dateBorrowed)
     .add(2, 'days')
     .toDate();
-  next();
-});
+};
 
 borrowSchema.methods.setReturn = function() {
   this.dateReturned = new Date();

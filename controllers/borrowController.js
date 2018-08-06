@@ -44,6 +44,7 @@ exports.createBorrow = async (req, res) => {
       failedReturnFee: book.failedReturnFee
     }
   });
+  borrow.setDueDate();
 
   const bookPromise = Book.update(
     { _id: book._id },

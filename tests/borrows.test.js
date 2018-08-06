@@ -101,6 +101,8 @@ describe('/api/borrows', () => {
           failedReturnFee: 50
         }
       });
+      borrow.setDueDate();
+      
       await borrow.save();
 
       id = borrow._id;
