@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node server.js",
     "test": "jest --watchAll --verbose"
+  },
+  "engines": {
+    "node": "8.11.2"
   },
   "author": "Ricardo Masian Jr.",
   "license": "ISC",
