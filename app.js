@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
+const cors = require('cors');
 
 require('dotenv').config();
 
@@ -18,6 +19,7 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
 
 app.use('/api/auth', auth);
 app.use('/api/categories', categories);
